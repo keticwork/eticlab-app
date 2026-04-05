@@ -2,7 +2,6 @@
 
 import { createClient } from "@/lib/supabase-client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 /* ─── Google OAuth ─── */
 
@@ -38,7 +37,6 @@ export function GoogleAuthButton() {
 
 export function LoginForm() {
   const supabase = createClient();
-  const router = useRouter();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -56,8 +54,7 @@ export function LoginForm() {
       return;
     }
 
-    router.push("/arbre");
-    router.refresh();
+    window.location.href = "/";
   };
 
   return (
