@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { ScrollFadeProvider } from "@/components/ui/ScrollFadeProvider";
+import { supabase } from "@/lib/supabase";
 
-/* ─── Data ─── */
+/* ─── Couleurs dégradées par phase ─── */
 
-const phases = [
-  { name: "Fondations", modules: 8, tags: ["Node.js", "Terminal", "Git"], from: "#1D9E75", to: "#5DCAA5" },
-  { name: "Bases du web", modules: 4, tags: ["HTML", "CSS", "JavaScript"], from: "#378ADD", to: "#85B7EB" },
-  { name: "L'application", modules: 3, tags: ["Next.js", "Routing", "UI"], from: "#7F77DD", to: "#AFA9EC" },
-  { name: "Les données", modules: 2, tags: ["Supabase", "API REST", "SQL"], from: "#EF9F27", to: "#FAC775" },
-  { name: "Mise en prod", modules: 6, tags: ["Vercel", "SEO", "Sécurité"], from: "#D85A30", to: "#F0997B" },
-];
+const phaseGradients: Record<string, { from: string; to: string }> = {
+  "#1D9E75": { from: "#1D9E75", to: "#5DCAA5" },
+  "#378ADD": { from: "#378ADD", to: "#85B7EB" },
+  "#7F77DD": { from: "#7F77DD", to: "#AFA9EC" },
+  "#EF9F27": { from: "#EF9F27", to: "#FAC775" },
+  "#D85A30": { from: "#D85A30", to: "#F0997B" },
+};
 
 const aiExamples = [
   "Je veux créer un SaaS de A à Z",
@@ -45,7 +46,12 @@ const treeData = {
 
 /* ─── Page ─── */
 
-export default function Home() {
+export default async function Home() {
+  const { data: phasesData } = await supabase
+    .from("phases")
+    .select("*, modules(*)")
+    .order("ordre");
+
   return (
     <ScrollFadeProvider>
       {/* ════════════════════════════════════════════
@@ -280,28 +286,33 @@ export default function Home() {
           </p>
 
           <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            {phases.map((phase) => (
-              <button
-                key={phase.name}
-                className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white text-left shadow-sm transition-all hover:-translate-y-1 hover:border-gray-300 hover:shadow-md"
-              >
-                <div
-                  className="h-1.5 w-full"
-                  style={{ background: `linear-gradient(90deg, ${phase.from}, ${phase.to})` }}
-                />
-                <div className="flex flex-1 flex-col p-4">
-                  <h3 className="text-sm font-semibold text-gray-900">{phase.name}</h3>
-                  <p className="mt-1 text-xs text-gray-400">{phase.modules} modules</p>
-                  <div className="mt-3 flex flex-wrap gap-1">
-                    {phase.tags.map((tag) => (
-                      <span key={tag} className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">
-                        {tag}
-                      </span>
-                    ))}
+            {phasesData?.map((phase) => {
+              const gradient = phaseGradients[phase.couleur] || { from: phase.couleur, to: phase.couleur };
+              const modules = phase.modules || [];
+              const tags = modules.slice(0, 3).map((m: { nom: string }) => m.nom);
+              return (
+                <button
+                  key={phase.code}
+                  className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white text-left shadow-sm transition-all hover:-translate-y-1 hover:border-gray-300 hover:shadow-md"
+                >
+                  <div
+                    className="h-1.5 w-full"
+                    style={{ background: `linear-gradient(90deg, ${gradient.from}, ${gradient.to})` }}
+                  />
+                  <div className="flex flex-1 flex-col p-4">
+                    <h3 className="text-sm font-semibold text-gray-900">{phase.nom}</h3>
+                    <p className="mt-1 text-xs text-gray-400">{modules.length} modules</p>
+                    <div className="mt-3 flex flex-wrap gap-1">
+                      {tags.map((tag: string) => (
+                        <span key={tag} className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </button>
-            ))}
+                </button>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -431,7 +442,7 @@ export default function Home() {
             Prêt à comprendre comment tout fonctionne ?
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-gray-500">
-            20+ modules gratuits. Du terminal à la mise en production.
+            {phasesData?.reduce((acc, p) => acc + (p.modules?.length || 0), 0) || 0} modules gratuits. Du terminal à la mise en production.
             Commence maintenant, à ton rythme.
           </p>
           <Link
