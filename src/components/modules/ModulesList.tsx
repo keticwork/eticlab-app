@@ -36,6 +36,7 @@ export function ModulesList({
   const initialPhase = searchParams.get("phase") || "";
   const [search, setSearch] = useState(initialQuery);
   const [phaseFilter, setPhaseFilter] = useState(initialPhase);
+  const [parcoursCodes, setParcoursCodes] = useState<string[]>([]);
 
   useEffect(() => {
     const q = searchParams.get("q");
@@ -43,6 +44,24 @@ export function ModulesList({
     if (q) setSearch(q);
     if (p) setPhaseFilter(p);
   }, [searchParams]);
+
+  // Charger le projet actif depuis localStorage
+  useEffect(() => {
+    const loadActive = () => {
+      const stored = localStorage.getItem("eticlab-active-project");
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          setParcoursCodes((parsed.parcours || []).map((p: { code: string }) => p.code.toUpperCase()));
+        } catch { setParcoursCodes([]); }
+      } else {
+        setParcoursCodes([]);
+      }
+    };
+    loadActive();
+    window.addEventListener("eticlab-project-changed", loadActive);
+    return () => window.removeEventListener("eticlab-project-changed", loadActive);
+  }, []);
 
   const filtered = modules.filter((m) => {
     // Phase filter
@@ -148,19 +167,32 @@ export function ModulesList({
 
               {/* Cards */}
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {phase.modules.map((m) => (
+                {phase.modules.map((m) => {
+                  const inParcours = parcoursCodes.includes(m.code.toUpperCase());
+                  return (
                   <Link
                     key={m.id}
                     href={`/modules/${m.code.toLowerCase()}`}
-                    className="group flex flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-md"
+                    className={`group flex flex-col rounded-xl border bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md ${
+                      inParcours
+                        ? "border-[#1D9E75] shadow-[#1D9E75]/10"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
                   >
                     <div className="flex items-start justify-between">
-                      <span
-                        className="rounded-md px-2 py-0.5 text-xs font-semibold text-white"
-                        style={{ backgroundColor: phase.couleur }}
-                      >
-                        {m.code}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="rounded-md px-2 py-0.5 text-xs font-semibold text-white"
+                          style={{ backgroundColor: phase.couleur }}
+                        >
+                          {m.code}
+                        </span>
+                        {inParcours && (
+                          <span className="rounded-full bg-[#1D9E75]/10 px-2 py-0.5 text-xs font-medium text-[#1D9E75]">
+                            Dans ton parcours
+                          </span>
+                        )}
+                      </div>
                       <span className="text-sm">
                         {m.statut === "disponible" ? "✅" : "🔲"}
                       </span>
@@ -186,7 +218,8 @@ export function ModulesList({
                       </div>
                     )}
                   </Link>
-                ))}
+                  );
+                })}
               </div>
             </div>
           ))}

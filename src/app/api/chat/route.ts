@@ -73,7 +73,7 @@ export async function POST(request: Request) {
     .map(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (m: any) =>
-        `- ${m.code} : ${m.nom} (${m.phases?.nom || "?"}) — ${m.description || ""} [${m.statut}]`
+        `- ${m.code} — ${m.nom} (${m.phases?.nom || "?"}) : ${m.description || ""} [${m.statut}]`
     )
     .join("\n");
 
@@ -90,7 +90,8 @@ Règles :
 - Sois encourageant et pédagogique
 - Réponds toujours en français
 - Format de réponse : d'abord une analyse du projet, ensuite le parcours recommandé avec les modules dans l'ordre
-- Quand tu cites un module, utilise son code exact (ex: C3-01, T-01, C4-01)`;
+- Quand tu cites un module, utilise TOUJOURS le format "CODE — Nom" (ex: "T-01 — Node.js", "C4-01 — Supabase")
+- Ne cite jamais un code seul sans son nom`;
 
   // Construire les messages pour l'API
   const messages: { role: "user" | "assistant"; content: string }[] = [];
@@ -154,6 +155,35 @@ Règles :
         ai_last_request_date: today,
       })
       .eq("id", user.id);
+
+    // Extraire les codes modules de la réponse et sauvegarder le projet
+    const codeRegex = /(C\d+-\d+[a-z]?|T-\d+[a-z]?|T-A\d+[a-z]?|T-SEC\d+|T-LEG\d+|T-ORG\d+|T-GCLOUD\d+)/gi;
+    const foundCodes = [...new Set(assistantResponse.match(codeRegex) || [])];
+
+    if (foundCodes.length > 0 && conversation_history.length === 0) {
+      // Premier message = nouveau projet
+      const titre = message.split(/\s+/).slice(0, 5).join(" ");
+      const parcours = foundCodes.map((code: string) => {
+        const mod = (modules || []).find(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (m: any) => m.code.toLowerCase() === code.toLowerCase()
+        );
+        return { code: code.toUpperCase(), nom: mod?.nom || code };
+      });
+
+      const { data: project } = await supabase
+        .from("ai_projects")
+        .insert({ user_id: user.id, titre, parcours })
+        .select("id")
+        .single();
+
+      return NextResponse.json({
+        response: assistantResponse,
+        requests_remaining: DAILY_LIMIT - requestsToday - 1,
+        project_id: project?.id,
+        parcours,
+      });
+    }
 
     return NextResponse.json({
       response: assistantResponse,

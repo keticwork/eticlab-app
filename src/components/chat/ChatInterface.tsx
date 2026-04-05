@@ -8,19 +8,24 @@ type Message = {
   content: string;
 };
 
+// Regex pour capturer "CODE — Nom" ou juste "CODE"
+const MODULE_REGEX = /((?:C\d+-\d+[a-z]?|T-\d+[a-z]?|T-A\d+[a-z]?|T-SEC\d+|T-LEG\d+|T-ORG\d+|T-GCLOUD\d+)(?:\s*—\s*[^.,\n()\[\]]+)?)/g;
+const CODE_ONLY = /^(C\d+-\d+[a-z]?|T-\d+[a-z]?|T-A\d+[a-z]?|T-SEC\d+|T-LEG\d+|T-ORG\d+|T-GCLOUD\d+)/i;
+
 function formatResponse(text: string) {
-  // Rendre les codes modules cliquables
-  const parts = text.split(/((?:C\d+-\d+[a-z]?|T-\d+[a-z]?|T-A\d+[a-z]?|T-SEC\d+|T-LEG\d+|T-ORG\d+|T-GCLOUD\d+))/g);
+  const parts = text.split(MODULE_REGEX);
 
   return parts.map((part, i) => {
-    if (/^(C\d+-\d+|T-\d+|T-A\d+|T-SEC\d+|T-LEG\d+|T-ORG\d+|T-GCLOUD\d+)/i.test(part)) {
+    const codeMatch = part.match(CODE_ONLY);
+    if (codeMatch) {
+      const code = codeMatch[1];
       return (
         <Link
           key={i}
-          href={`/modules/${part.toLowerCase()}`}
-          className="rounded bg-[#1D9E75]/10 px-1.5 py-0.5 font-mono text-sm font-semibold text-[#1D9E75] hover:bg-[#1D9E75]/20"
+          href={`/modules/${code.toLowerCase()}`}
+          className="inline rounded bg-[#1D9E75]/10 px-1.5 py-0.5 text-sm font-semibold text-[#1D9E75] hover:bg-[#1D9E75]/20"
         >
-          {part}
+          {part.trim()}
         </Link>
       );
     }

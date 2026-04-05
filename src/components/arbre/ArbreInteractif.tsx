@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 type Phase = {
@@ -36,6 +36,25 @@ export function ArbreInteractif({
 }) {
   const [openPhases, setOpenPhases] = useState<Set<string>>(new Set());
   const [selectedModule, setSelectedModule] = useState<Module | null>(null);
+  const [parcoursCodes, setParcoursCodes] = useState<string[]>([]);
+
+  // Charger le projet actif depuis localStorage
+  useEffect(() => {
+    const loadActive = () => {
+      const stored = localStorage.getItem("eticlab-active-project");
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          setParcoursCodes((parsed.parcours || []).map((p: { code: string }) => p.code.toUpperCase()));
+        } catch { setParcoursCodes([]); }
+      } else {
+        setParcoursCodes([]);
+      }
+    };
+    loadActive();
+    window.addEventListener("eticlab-project-changed", loadActive);
+    return () => window.removeEventListener("eticlab-project-changed", loadActive);
+  }, []);
 
   const togglePhase = (code: string) => {
     setOpenPhases((prev) => {
@@ -127,14 +146,23 @@ export function ArbreInteractif({
                           )}
                           <button
                             onClick={() => setSelectedModule(mod)}
-                            className="w-full rounded-lg border bg-white px-3 py-2.5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+                            className={`w-full rounded-lg border bg-white px-3 py-2.5 text-left transition-all hover:-translate-y-0.5 hover:shadow-md ${
+                              parcoursCodes.includes(mod.code.toUpperCase())
+                                ? "shadow-md shadow-[#1D9E75]/20"
+                                : "shadow-sm"
+                            }`}
                             style={{
                               borderColor:
                                 selectedModule?.id === mod.id
                                   ? phase.couleur
-                                  : "#e5e7eb",
+                                  : parcoursCodes.includes(mod.code.toUpperCase())
+                                    ? "#1D9E75"
+                                    : "#e5e7eb",
                             }}
                           >
+                            {/* TODO: Animation future du fil rouge — quand parcoursCodes est défini,
+                                dessiner une ligne SVG colorée en #1D9E75 reliant les modules
+                                du parcours dans l'ordre vertical */}
                             <div className="flex items-center justify-between">
                               <span
                                 className="rounded px-1.5 py-0.5 text-xs font-semibold text-white"
@@ -233,7 +261,7 @@ export function ArbreInteractif({
       {/* Overlay quand panel ouvert */}
       {selectedModule && (
         <div
-          className="fixed inset-0 z-40 bg-black/20"
+          className="fixed inset-0 z-30 bg-black/20"
           onClick={() => setSelectedModule(null)}
         />
       )}
