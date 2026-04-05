@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ScrollFadeProvider } from "@/components/ui/ScrollFadeProvider";
+import { HeroSearch } from "@/components/ui/HeroSearch";
 import { supabase } from "@/lib/supabase";
 
 /* ─── Couleurs dégradées par phase ─── */
@@ -84,16 +85,7 @@ export default async function Home() {
           </p>
 
           {/* Barre de recherche */}
-          <div className="hero-fade hero-fade-3 mx-auto mt-10 flex max-w-lg overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">
-            <input
-              type="text"
-              placeholder="Rechercher un module, un concept..."
-              className="flex-1 bg-transparent px-5 py-3.5 text-sm text-white outline-none placeholder:text-gray-500"
-            />
-            <button className="bg-[#1D9E75] px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-[#178a64]">
-              Rechercher
-            </button>
-          </div>
+          <HeroSearch />
 
           {/* CTA */}
           <div className="hero-fade hero-fade-4 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
