@@ -283,9 +283,10 @@ export default async function Home() {
               const modules = phase.modules || [];
               const tags = modules.slice(0, 3).map((m: { nom: string }) => m.nom);
               return (
-                <button
+                <Link
                   key={phase.code}
-                  className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white text-left shadow-sm transition-all hover:-translate-y-1 hover:border-gray-300 hover:shadow-md"
+                  href={`/modules?phase=${phase.code}`}
+                  className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-gray-200 bg-white text-left shadow-sm transition-all hover:-translate-y-1 hover:border-gray-300 hover:shadow-md"
                 >
                   <div
                     className="h-1.5 w-full"
@@ -302,7 +303,7 @@ export default async function Home() {
                       ))}
                     </div>
                   </div>
-                </button>
+                </Link>
               );
             })}
           </div>

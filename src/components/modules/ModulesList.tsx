@@ -33,14 +33,21 @@ export function ModulesList({
 }) {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
+  const initialPhase = searchParams.get("phase") || "";
   const [search, setSearch] = useState(initialQuery);
+  const [phaseFilter, setPhaseFilter] = useState(initialPhase);
 
   useEffect(() => {
     const q = searchParams.get("q");
+    const p = searchParams.get("phase");
     if (q) setSearch(q);
+    if (p) setPhaseFilter(p);
   }, [searchParams]);
 
   const filtered = modules.filter((m) => {
+    // Phase filter
+    if (phaseFilter && m.phaseCode !== phaseFilter) return false;
+    // Search filter
     if (!search) return true;
     const q = search.toLowerCase();
     return (
@@ -95,6 +102,22 @@ export function ModulesList({
           )}
         </div>
       </div>
+
+      {/* Filtre phase actif */}
+      {phaseFilter && (
+        <div className="mx-auto mb-6 flex max-w-lg items-center justify-center gap-2">
+          <span className="text-sm text-gray-500">Filtre :</span>
+          <span className="rounded-full bg-gray-200 px-3 py-1 text-xs font-medium text-gray-700">
+            {phases.find((p) => p.code === phaseFilter)?.nom || phaseFilter}
+          </span>
+          <button
+            onClick={() => setPhaseFilter("")}
+            className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500 hover:bg-gray-200"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Résultats */}
       {filtered.length === 0 ? (

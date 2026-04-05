@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase-server";
-import { ArbreGraph } from "@/components/arbre/ArbreGraph";
+import { ArbreInteractif } from "@/components/arbre/ArbreInteractif";
 
 export default async function ArbrePage() {
   const supabase = await createClient();
@@ -14,38 +14,33 @@ export default async function ArbrePage() {
     .select("*, phases(nom, couleur, code)")
     .order("ordre");
 
-  const { data: connexions } = await supabase
-    .from("module_connexions")
-    .select("*");
-
   return (
-    <section className="min-h-[calc(100vh-120px)] bg-[#0A0F0D]">
-      {/* Mobile hint */}
-      <div className="block px-4 pt-4 text-center sm:hidden">
-        <p className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-xs text-gray-500">
-          Meilleure expérience sur desktop — zoom et drag disponibles
-        </p>
-      </div>
-
+    <section className="min-h-[calc(100vh-120px)] bg-[#F8FAF9]">
       {/* Header */}
-      <div className="px-4 pt-8 text-center">
-        <h1 className="text-3xl font-bold text-white">
+      <div className="px-4 pt-10 text-center">
+        <h1 className="text-3xl font-bold text-gray-900">
           L&apos;Arbre des modules
         </h1>
         <p className="mt-2 text-gray-500">
-          {modules?.length || 0} modules — clique sur une bulle pour explorer
+          {modules?.length || 0} modules — clique sur une phase pour l&apos;ouvrir
         </p>
       </div>
 
-      {/* Graph */}
-      <ArbreGraph
+      {/* Mobile hint */}
+      <div className="block px-4 pt-4 text-center sm:hidden">
+        <p className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs text-gray-400">
+          Meilleure expérience sur desktop
+        </p>
+      </div>
+
+      {/* Arbre */}
+      <ArbreInteractif
         phases={phases || []}
         modules={modules || []}
-        connexions={connexions || []}
       />
 
       {/* Légende */}
-      <div className="flex flex-wrap items-center justify-center gap-4 px-4 pb-8">
+      <div className="flex flex-wrap items-center justify-center gap-4 px-4 pb-10">
         {phases?.map((phase) => (
           <div key={phase.code} className="flex items-center gap-2">
             <div
