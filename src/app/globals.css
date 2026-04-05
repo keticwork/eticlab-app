@@ -1,1 +1,45 @@
 @import "tailwindcss";
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.6s ease-out both;
+}
+
+.animate-fade-up-delay-1 {
+  animation: fadeUp 0.6s ease-out 0.1s both;
+}
+
+.animate-fade-up-delay-2 {
+  animation: fadeUp 0.6s ease-out 0.2s both;
+}
+
+.animate-fade-up-delay-3 {
+  animation: fadeUp 0.6s ease-out 0.3s both;
+}
+
+.animate-fade-up-delay-4 {
+  animation: fadeUp 0.6s ease-out 0.4s both;
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
