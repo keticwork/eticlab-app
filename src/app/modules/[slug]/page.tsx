@@ -84,6 +84,22 @@ export default async function ModulePage({
           </div>
         </div>
 
+        {/* Prérequis */}
+        {mod.prerequis && mod.prerequis.length > 0 && (
+          <div className="mb-6 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-medium text-gray-400">Prérequis :</span>
+            {mod.prerequis.map((pre: string) => (
+              <Link
+                key={pre}
+                href={`/modules/${pre.toLowerCase()}`}
+                className="rounded-full bg-[#1D9E75]/10 px-3 py-1 text-xs font-semibold text-[#1D9E75] hover:bg-[#1D9E75]/20"
+              >
+                {pre}
+              </Link>
+            ))}
+          </div>
+        )}
+
         {/* Contenu markdown ou placeholder */}
         {markdown ? (
           <ModuleContent markdown={markdown} />

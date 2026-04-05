@@ -37,7 +37,7 @@ export default function Navbar() {
     : "?";
 
   return (
-    <nav className="border-b border-gray-200 bg-white">
+    <nav className="fixed left-0 right-0 top-0 z-50 border-b border-gray-200 bg-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link href="/" className="text-xl font-bold">
