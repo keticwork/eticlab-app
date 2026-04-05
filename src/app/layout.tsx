@@ -15,8 +15,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EticLab — Formation technique interactive",
-  description: "Comprends chaque brique d'un SaaS, du hardware au business.",
+  title: "EticLab — Formation technique",
+  description: "Comprends chaque brique technologique, du code à la mise en production. Modules clairs, guidés par IA.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
