@@ -53,10 +53,10 @@ export default async function ModulePage({
   }
 
   return (
-    <section className="min-h-[calc(100vh-120px)] bg-gradient-to-b from-[#0A0F0D] via-[#F8FAF9] to-[#F8FAF9]">
-      <div className="mx-auto max-w-5xl px-6 py-10">
+    <section className="min-h-screen bg-gradient-to-b from-[#0A0F0D] via-[#F8FAF9] to-[#F8FAF9]">
+      <div className="mx-auto max-w-5xl px-6 py-6">
         {/* Breadcrumb */}
-        <nav className="mb-8 flex items-center gap-2 text-sm text-gray-500">
+        <nav className="mb-4 flex items-center gap-2 text-sm text-gray-500">
           <Link href="/modules" className="text-gray-400 hover:text-white">
             Modules
           </Link>
@@ -69,7 +69,7 @@ export default async function ModulePage({
         </nav>
 
         {/* Header module */}
-        <div className="mb-8 flex items-start gap-4">
+        <div className="mb-4 flex items-start gap-4">
           <span
             className="rounded-lg px-3 py-1.5 text-sm font-bold text-white"
             style={{ backgroundColor: mod.phases?.couleur || "#666" }}
@@ -86,7 +86,7 @@ export default async function ModulePage({
 
         {/* Prérequis */}
         {mod.prerequis && mod.prerequis.length > 0 && (
-          <div className="mb-6 flex flex-wrap items-center gap-2">
+          <div className="mb-4 flex flex-wrap items-center gap-2">
             <span className="text-xs font-medium text-gray-400">Prérequis :</span>
             {mod.prerequis.map((pre: string) => (
               <Link

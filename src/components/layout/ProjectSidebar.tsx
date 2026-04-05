@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase-client";
 import type { User } from "@supabase/supabase-js";
 
@@ -20,6 +21,8 @@ type ActiveProject = {
 
 export function ProjectSidebar() {
   const supabase = createClient();
+  const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [collapsed, setCollapsed] = useState(true);
@@ -50,7 +53,7 @@ export function ProjectSidebar() {
     setProjects(data || []);
   };
 
-  const activateProject = (project: Project) => {
+  const activateProject = async (project: Project) => {
     const active: ActiveProject = {
       id: project.id,
       titre: project.titre,
@@ -59,6 +62,22 @@ export function ProjectSidebar() {
     localStorage.setItem("eticlab-active-project", JSON.stringify(active));
     setActiveId(project.id);
     window.dispatchEvent(new Event("eticlab-project-changed"));
+
+    // Charger la conversation si on est sur /ia ou y aller
+    const { data } = await supabase
+      .from("ai_projects")
+      .select("messages")
+      .eq("id", project.id)
+      .single();
+
+    if (data?.messages && Array.isArray(data.messages) && data.messages.length > 0) {
+      localStorage.setItem("eticlab-load-conversation", JSON.stringify(data.messages));
+      window.dispatchEvent(new Event("eticlab-load-conversation"));
+    }
+
+    if (pathname !== "/ia") {
+      router.push("/arbre");
+    }
   };
 
   const clearProject = () => {

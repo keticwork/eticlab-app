@@ -91,7 +91,16 @@ Règles :
 - Réponds toujours en français
 - Format de réponse : d'abord une analyse du projet, ensuite le parcours recommandé avec les modules dans l'ordre
 - Quand tu cites un module, utilise TOUJOURS le format "CODE — Nom" (ex: "T-01 — Node.js", "C4-01 — Supabase")
-- Ne cite jamais un code seul sans son nom`;
+- Ne cite jamais un code seul sans son nom
+- À la fin de ta réponse, ajoute TOUJOURS ce bloc séparé :
+
+---
+**🤖 Prompt pour une autre IA (ChatGPT, Gemini...)**
+Tu es un assistant pédagogique. Mon objectif est : [reprendre l'objectif de l'utilisateur].
+Mon parcours d'apprentissage recommandé est :
+[lister les modules recommandés avec leur code et nom complet dans l'ordre]
+Aide-moi à comprendre ce parcours et à commencer par la première étape.
+---`;
 
   // Construire les messages pour l'API
   const messages: { role: "user" | "assistant"; content: string }[] = [];
@@ -160,6 +169,12 @@ Règles :
     const codeRegex = /(C\d+-\d+[a-z]?|T-\d+[a-z]?|T-A\d+[a-z]?|T-SEC\d+|T-LEG\d+|T-ORG\d+|T-GCLOUD\d+)/gi;
     const foundCodes = [...new Set(assistantResponse.match(codeRegex) || [])];
 
+    // Conversation complète pour sauvegarde
+    const fullConversation = [
+      ...messages,
+      { role: "assistant", content: assistantResponse },
+    ];
+
     if (foundCodes.length > 0 && conversation_history.length === 0) {
       // Premier message = nouveau projet
       const titre = message.split(/\s+/).slice(0, 5).join(" ");
@@ -173,7 +188,12 @@ Règles :
 
       const { data: project } = await supabase
         .from("ai_projects")
-        .insert({ user_id: user.id, titre, parcours })
+        .insert({
+          user_id: user.id,
+          titre,
+          parcours,
+          messages: fullConversation,
+        })
         .select("id")
         .single();
 
@@ -183,6 +203,22 @@ Règles :
         project_id: project?.id,
         parcours,
       });
+    }
+
+    // Conversation de suivi — mettre à jour le dernier projet
+    const { data: lastProject } = await supabase
+      .from("ai_projects")
+      .select("id")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (lastProject) {
+      await supabase
+        .from("ai_projects")
+        .update({ messages: fullConversation })
+        .eq("id", lastProject.id);
     }
 
     return NextResponse.json({
