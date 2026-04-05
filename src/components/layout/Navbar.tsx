@@ -67,6 +67,14 @@ export default function Navbar() {
               >
                 🤖 IA
               </Link>
+              {user.email === "keticwork@gmail.com" && (
+                <Link
+                  href="/admin"
+                  className="px-2 py-1 text-xs text-gray-300 hover:text-gray-500"
+                >
+                  Admin
+                </Link>
+              )}
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0F6E56] text-xs font-bold text-white">
                 {initials}
               </div>
