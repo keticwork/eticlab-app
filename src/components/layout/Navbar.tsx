@@ -61,6 +61,12 @@ export default function Navbar() {
             <div className="h-8 w-24" />
           ) : user ? (
             <>
+              <Link
+                href="/ia"
+                className="rounded-lg bg-[#1D9E75]/10 px-3 py-2 text-sm font-medium text-[#1D9E75] hover:bg-[#1D9E75]/20"
+              >
+                🤖 IA
+              </Link>
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0F6E56] text-xs font-bold text-white">
                 {initials}
               </div>
@@ -120,6 +126,13 @@ export default function Navbar() {
             <hr className="border-gray-200" />
             {user ? (
               <>
+                <Link
+                  href="/ia"
+                  className="text-sm font-medium text-[#1D9E75] hover:text-[#178a64]"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  🤖 Guide IA
+                </Link>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0F6E56] text-xs font-bold text-white">
                     {initials}
