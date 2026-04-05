@@ -193,7 +193,7 @@ export function ArbreInteractif({
       {selectedModule && (
         <div
           className="animate-slide-in fixed right-0 z-40 w-full overflow-y-auto border-l border-gray-200 bg-white p-6 shadow-xl sm:w-[360px]"
-          style={{ top: "57px", bottom: "0" }}
+          style={{ top: "57px", bottom: "48px" }}
         >
           <div className="flex items-start justify-between">
             <div>

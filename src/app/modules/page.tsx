@@ -33,13 +33,13 @@ export default async function ModulesPage() {
   ).length;
 
   return (
-    <section className="min-h-[calc(100vh-120px)] bg-[#F8FAF9] py-12">
-      <div className="mx-auto max-w-5xl px-4">
+    <section className="min-h-[calc(100vh-120px)] bg-gradient-to-b from-[#0A0F0D] via-[#F8FAF9] to-[#F8FAF9] py-12">
+      <div className="mx-auto max-w-6xl px-6">
         <div className="mb-10 text-center">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-white">
             Tous les modules
           </h1>
-          <p className="mt-2 text-gray-500">
+          <p className="mt-2 text-gray-400">
             {totalDisponible} modules disponibles — {allModules.length} au total
           </p>
         </div>

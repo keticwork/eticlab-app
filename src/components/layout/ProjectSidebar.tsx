@@ -71,8 +71,8 @@ export function ProjectSidebar() {
 
   return (
     <aside
-      className="fixed bottom-0 left-0 z-30 border-r border-gray-200 bg-white transition-all duration-200"
-      style={{ top: "57px", width: collapsed ? "48px" : "240px" }}
+      className="fixed left-0 z-30 border-r border-gray-200 bg-white transition-all duration-200"
+      style={{ top: "57px", bottom: "48px", width: collapsed ? "48px" : "240px" }}
     >
       {/* Toggle */}
       <button

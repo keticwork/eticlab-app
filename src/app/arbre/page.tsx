@@ -15,13 +15,13 @@ export default async function ArbrePage() {
     .order("ordre");
 
   return (
-    <section className="min-h-[calc(100vh-120px)] bg-[#F8FAF9]">
+    <section className="min-h-[calc(100vh-120px)] bg-gradient-to-b from-[#0A0F0D] via-[#F8FAF9] to-[#F8FAF9]">
       {/* Header */}
       <div className="px-4 pt-10 text-center">
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-3xl font-bold text-white">
           L&apos;Arbre des modules
         </h1>
-        <p className="mt-2 text-gray-500">
+        <p className="mt-2 text-gray-400">
           {modules?.length || 0} modules — clique sur une phase pour l&apos;ouvrir
         </p>
       </div>

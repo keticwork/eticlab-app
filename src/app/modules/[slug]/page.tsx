@@ -53,11 +53,11 @@ export default async function ModulePage({
   }
 
   return (
-    <section className="min-h-[calc(100vh-120px)] bg-[#F8FAF9]">
-      <div className="mx-auto max-w-3xl px-4 py-10">
+    <section className="min-h-[calc(100vh-120px)] bg-gradient-to-b from-[#0A0F0D] via-[#F8FAF9] to-[#F8FAF9]">
+      <div className="mx-auto max-w-5xl px-6 py-10">
         {/* Breadcrumb */}
-        <nav className="mb-8 flex items-center gap-2 text-sm text-gray-400">
-          <Link href="/modules" className="hover:text-gray-600">
+        <nav className="mb-8 flex items-center gap-2 text-sm text-gray-500">
+          <Link href="/modules" className="text-gray-400 hover:text-white">
             Modules
           </Link>
           <span>/</span>
@@ -77,7 +77,7 @@ export default async function ModulePage({
             {mod.code}
           </span>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{mod.nom}</h1>
+            <h1 className="text-2xl font-bold text-white">{mod.nom}</h1>
             {mod.description && (
               <p className="mt-1 text-gray-500">{mod.description}</p>
             )}
