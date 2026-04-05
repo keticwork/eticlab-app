@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* ─── Animations ─── */
 
@@ -69,6 +70,16 @@
 .hero-fade-2 { animation-delay: 0.2s; }
 .hero-fade-3 { animation-delay: 0.35s; }
 .hero-fade-4 { animation-delay: 0.5s; }
+
+/* Slide-in panel */
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out both;
+}
 
 /* ─── Hero grid background ─── */
 

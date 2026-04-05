@@ -163,7 +163,10 @@ export function ArbreInteractif({
 
       {/* ─── Panel module sélectionné ─── */}
       {selectedModule && (
-        <div className="fixed inset-y-0 right-0 z-50 w-80 border-l border-gray-200 bg-white p-6 shadow-xl sm:w-96">
+        <div
+          className="animate-slide-in fixed bottom-0 right-0 z-50 w-full overflow-y-auto border-l border-gray-200 bg-white p-6 shadow-xl sm:w-[360px]"
+          style={{ top: "57px" }}
+        >
           <div className="flex items-start justify-between">
             <div>
               <span
